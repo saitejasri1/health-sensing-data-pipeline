@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Data
+output/
+*.parquet
+*.csv
+*.log
+
+# Operating System files
+.DS_Store
+.vscode/ # If you use VS Code and don't want settings committed
