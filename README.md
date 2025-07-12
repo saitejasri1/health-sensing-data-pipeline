@@ -1,4 +1,4 @@
-# Health Sensing Data Pipeline
+# Data Pipeline
 
 This repository contains a simple data pipeline designed to process raw user event logs from a website into a cleaned, structured, and analytics-ready format. The pipeline extracts, transforms, and loads the data, then performs basic aggregations to provide insights into user activity.
 
