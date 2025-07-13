@@ -5,7 +5,7 @@ import os
 from datetime import datetime, date
 from pathlib import Path
 import logging 
-import logging.handlers # IMPORTANT: Needed for robust logging setup
+import logging.handlers 
 
 # Importing data pipeline functions
 from datapipeline import (
@@ -23,21 +23,22 @@ from datapipeline import (
 
 class TestDataPipeline(unittest.TestCase):
     """
-    Overview of Test Cases for the Data Pipeline:
+    Test Cases Overview for the Data Pipeline:
 
-    This test suite validates the core functionalities of the data pipeline:
-    - Data Extraction: Ensures correct loading of JSON data, handling of malformed
-      events (missing keys, empty values), and graceful failure for invalid files.
-    - Data Transformation: Verifies that raw event data is correctly normalized,
-      timestamps are converted, and metadata fields are appropriately typed.
-      Includes tests for empty input and malformed specific data points.
-    - Data Analytics: Confirms that aggregation functions produce accurate
-      summary tables for daily event counts, total active users, and the most
-      active user, covering both typical and empty data scenarios.
+    This series of tests checks the basic functions of the data pipeline itself:
+    - Data Extraction: Ensures correct loading of JSON data, handling of malformed events
+     (missing keys, only spaces for values), and graceful failure for invalid files.
+    - Data Transformation: Verifies that raw event data is correctly normalized, 
+      timestamps are converted to ISO 8601 format, and metadata fields are defined as types rather than strings. 
+      Includes tests for empty input and a specific type of bad data.
+    - Data Analytics: Confirms that the aggregate processing operations produce correct summary tables of daily 
+      event counts, how many system users were logged on, who the most active user was, covering both typical and 
+      empty data situations.
+
     """
 
     def setUp(self):
-        global LOG_FILE # Declare global before first use
+        global LOG_FILE
 
         self.test_output_dir = "test_output"
         os.makedirs(self.test_output_dir, exist_ok=True)
@@ -52,7 +53,7 @@ class TestDataPipeline(unittest.TestCase):
         self._original_level = logging.getLogger().level
         self._original_propagate = logging.getLogger().propagate
 
-        LOG_FILE = str(self.temp_log_file) # Set global LOG_FILE to temp path for tests
+        LOG_FILE = str(self.temp_log_file)
         
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.ERROR)
@@ -60,8 +61,6 @@ class TestDataPipeline(unittest.TestCase):
         # Remove all existing handlers from the root logger before adding test-specific one
         for handler in self.logger.handlers[:]: 
             self.logger.removeHandler(handler)
-
-        # Create a FileHandler for the test log file
         self.file_handler = logging.FileHandler(self.temp_log_file, mode='w')
         formatter = logging.Formatter('%(asctime)s - %(message)s')
         self.file_handler.setFormatter(formatter)
@@ -70,7 +69,7 @@ class TestDataPipeline(unittest.TestCase):
 
 
     def tearDown(self):
-        global LOG_FILE # Declare global before first use
+        global LOG_FILE 
 
         if os.path.exists(self.test_output_dir):
             for f in os.listdir(self.test_output_dir):
@@ -79,8 +78,8 @@ class TestDataPipeline(unittest.TestCase):
 
         # Clean up logging handlers properly
         if hasattr(self, 'file_handler') and self.file_handler:
-            self.file_handler.close() # Close the file handler opened in setUp
-            self.logger.removeHandler(self.file_handler) # Remove the handler
+            self.file_handler.close()
+            self.logger.removeHandler(self.file_handler) 
 
         # Restore original logging configuration
         self.logger.propagate = self._original_propagate
@@ -88,7 +87,7 @@ class TestDataPipeline(unittest.TestCase):
         for handler in self._original_handlers:
             self.logger.addHandler(handler)
 
-        LOG_FILE = self.original_log_file_path # Restore original LOG_FILE path
+        LOG_FILE = self.original_log_file_path 
 
 
     #  Test Cases for extract_data function 

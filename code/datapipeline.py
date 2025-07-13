@@ -103,43 +103,33 @@ def main(input_path=DEFAULT_INPUT_FILE):
     """
     Main function to run the data pipeline.
     """
-    # Create output directory if it doesn't exist
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
-    
-    # Setup for logging (to capture errors and info with timestamps)
     logging.basicConfig(
         filename = LOG_FILE,
         level = logging.ERROR,
         format = '%(asctime)s - %(message)s'
 )
-
-    # 1. Read and Validate
-    print("Reading and validating events...")
+    print("Reading and validating events")
     valid_events = extract_data(input_path)
     if not valid_events:
         print("No valid events found. Exiting.")
         return
 
-    # 2. Transform
-    print("Transforming data...")
+    print("Transforming data")
     cleaned_df = transform_data(valid_events)
-    # Save to Parquet
+  
     cleaned_df.to_parquet(CLEANED_DATA_FILE, index=False)
     print(f"Successfully wrote cleaned data to {CLEANED_DATA_FILE}")
 
-
-    # 3. Run Analytics
-    print("Running analytics...")
+    print("Running analytics")
     events_per_day, total_active_users, most_active_user = define_analytics(cleaned_df)
-
-    # 4. Save Analytics Results
     events_per_day.to_parquet(DAILY_EVENT_COUNTS_FILE, index=False)
     total_active_users.to_parquet(TOTAL_ACTIVE_USERS_FILE, index=False)
     most_active_user.to_parquet(MOST_ACTIVE_USER_FILE, index=False)
     print(f"Analytics results saved in {OUTPUT_DIR}")
 
-    print("\nPipeline finished successfully!")
+    print("\nPipeline deployed!")
 
 if __name__ == '__main__':
     main()
