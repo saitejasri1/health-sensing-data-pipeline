@@ -4,18 +4,18 @@ This pipeline processes raw JSON user event logs into cleaned, analytics-ready P
 ## Pipeline Steps
 The pipeline is driven by a main function that executes the following modules:
 
-1. Extract (extract_data)
+1. **Extract (extract_data)**
 - Reads the raw JSON file of events into memory.
 - Checks that user_id, event_type, and timestamp are present and non-empty.
 - Logs and discards malformed events to allow the pipeline to continue running.
 
-2. Transform (transform_data)
+2. **Transform (transform_data)**
 - Converts valid records into a Pandas DataFrame.
 - Flattens the nested metadata field into top-level columns, eliminating the need for JOIN operations.
 - Translates timestamp strings into timezone-aware UTC datetime objects.
 - Handles errors by coercing metadata_amount to a numeric type.
 
-3. Analytics (define_analytics)
+3. **Analytics (define_analytics)**
 - Aggregates the clean data to produce the following summary tables:
     - The total number of events per day for each event type.
     - The total number of unique active users.
@@ -53,14 +53,14 @@ your_project_root/
 │   ├── datapipeline.py
 │   ├── test_pipeline.py
 │   └── outputs.py  # New file for inspection
-└── output/                  # This directory will be created by the pipeline
+└── output/                  # Pipelines create this directory
 ```
 
-Place the provided `raw_events.json` inside the `raw_data` directory.
+Put the supplied raw_events.json inside the raw_data directory.
 
 ### Running the Pipeline
 
-1.  Navigate to the `code/` directory in your terminal:
+1.  Go to the code/ directory in your terminal:
     ```bash
     cd your_project_root/code
     ```
@@ -70,22 +70,20 @@ Place the provided `raw_events.json` inside the `raw_data` directory.
     ```
 
 ### Viewing the Output
-
-After successful execution, the `output/` directory (created at the project root) will contain the following Parquet files:
-
-  * `cleaned_events.parquet`: The fully transformed and cleaned event data.
-  * `daily_event_counts.parquet`: A summary of event counts per event type per day.
+At the conclusion of the successful implementation, the `output/` directory (constructed at the project root) will include the following Parquet files:
+  * `cleaned_events.parquet`: Your fully transformed and cleaned event data.
+  * `daily_event_counts.parquet`:A summary of event counts per event type per day.
   * `total_active_users.parquet`: The total count of unique active users.
-  * `most_active_user.parquet`: The user ID and event count for the most active app user.
-  * `malformed_events.log`: A log file detailing any malformed events encountered during extraction.
+  * `most_active_user.parquet`: The user ID and event count for the most active app user.(commented in datapipeline.py)
+  * `malformed_events.log`:A log file that describes any malformed events found in the extraction.
 
-To easily inspect the contents of these Parquet files, I've provided a helper script `outputs.py`.
+To see the contents of these Parquet files with ease, I have created a man-page script `outputs.py`.
 
 **How to Run the Inspection Script:**
 
-1.  Save the code above as `outputs.py` inside your `code/` directory.
-2.  Ensure you have already run `datapipeline.py` at least once to generate the output files.
-3.  Navigate to the `code/` directory in your terminal:
+1.  Copy the code above and save it with the name `outputs.py` inside your `code/` directory.
+2.  You must have produced the output files by running `datapipeline.py` at least once.
+3.  Navigate to your terminal's `code/` directory:
     ```bash
     cd your_project_root/code
     ```
@@ -97,15 +95,15 @@ To easily inspect the contents of these Parquet files, I've provided a helper sc
 
 ### Running Unit Tests
 
-I've developed a dedicated unit test file, `test_pipeline.py`, to ensure the reliability and correctness of the pipeline's individual components. These tests cover essential scenarios for each function:
+A specialized unit test file, `test_pipeline.py`, has been created to validate the integrity and correctness of the pipeline's activities. Those tests cover important cases for each feature:
 
-  * **`extract_data` Tests:** Confirm correct data loading and robust handling of various bad inputs (e.g., missing fields, malformed JSON, non-existent files).
-  * **`transform_data` Tests:** Verify data cleaning, including flattening nested metadata, converting timestamps to UTC, and handling numeric conversions and empty inputs.
-  * **`define_analytics` Tests:** Check the accuracy of calculations for daily event counts, total active users, and identifying the most active user, including how it behaves with empty datasets.
+  * **`extract_data` Tests:** Confirm the proper loading of data and the robust handling of many poor entry points (missing fields, bogus JSON, non-existent files).
+  * **`transform_data` Tests:** Verify the cleaning of data, including flattening nested metadata, converting timestamps to UTC, managing numbers and empty entries.
+  * **`define_analytics` Tests:** Examine the precision of calculations for daily event counts, overall active users, and the most active user, plus how it behaves with blank data sets.
 
 To run these tests:
 
-1.  Navigate to the `code/` directory in your terminal:
+1.  In your terminal, go to the `code/` directory:
     ```bash
     cd your_project_root/code
     ```
@@ -113,4 +111,4 @@ To run these tests:
     ```bash
     python test_pipeline.py
     ```
-    You should see output indicating that all tests passed (`OK`).
+  You should see output that reports all tests have passed (OK).
